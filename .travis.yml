@@ -1,24 +1,15 @@
 language: java
+jdk:
+  - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
+  - openjdk12
 addons:
   sonarcloud:
     organization: "guilhermedelemos-github"
     token:
       secure: "FPtMwHcY+s0ouBk2pxFfgOIf/SjI+X6ZsUfE16y4Sg4XPINjvqAGnV8cuypQupGmxg6C6FOWtr4c3tfKcjyl8B8C5cG4j5gnkLNe1+9V/6YWLjZLOiIOiVQdztO90YX2W76IgPK+G8GlFwY793VRrN1tc2Ia7aVEKz5PGPPO//RrUcC6o+hYFndc4DYDOIxBImZQWfLi4ykd8QgD5ehZqaKxFergEYcBq9wmFwZPTQn49u7zAUwSOCBbQPNXGO+yVi2w84szNR+R9ZE+Q0SIH9C6uo28g2cv2QNSgQzNkEgyeBgZg5oNwlBo7gRGeF/tFdJfKABOmZWci58bk6ET4QOpLnhR7iDosJTv9ilJ+KMrmv3V18Zk4qhctuZtgsnY2ixDztdogLOHQlSwPq7T4fjsWWniIfKAdEJORP0LNL6kLMkXM/GkmPYBILiaykXFF+6i8Ry0GHF9UVL1GDQVk0hEivFdZjqnt+nMk+s/+WmmCIpuF2vXPCzLRoiYBy2qXPwlMcAsRR5EhHTLFU0WQfbz5Cj2Hg8+Kiu7O4SnlvQZNn1SAzxlG3NIqXNp1h2ESPL4rW7mXraVz3cOZDG3DK2frGAbg0Gu+LZLkqY/eFoh7iYEDvlWM6AqjFUGmKOdj9OT0brYCIU7IKGP8Je1glo1rD58H6JahN/egDkkSKc="
 script:
-  - ./gradlew check
-  - sonar-scanner
-before_deploy:
-- echo $TRAVIS_TAG
-deploy:
-  skip_cleanup: true
-  provider: releases
-  api_key:
-    secure: L8yvSjEqp1u546JWmbcaVhiD6GWFxMjnyo0qhWRcs1VzatUsNMgXckkkMndWk4NiUUOT3yWaE/q95oR1LQvxYtK3VLMNmmDCqGVTZVdZzQ6bkxUBSm1g5pLBRmoPGNqgjUfnKHX0ReY6d6k0uM39u7u92zlKCvfBuesTlu/v+DQpEbGEpQFRqcUAH6QPk/Vgdk4zEwMrjhOn2WRE3J0mLMfEreuQZy5X8/8uLPHWDrrZ/YFGajbHI6sPtK/I889JerogVVHUsvSWNg9gY/mfx1GfKUpwVwByzpMUNkdjU7sB9x0nup+HaOnxD2XV/gFbQapAL8DAZvffZI7hZEvN0apx5aOxT1nvJl4K79coVlPUlgrp0Uwa4meZBC86vevz1+2dzSClMpt0R1+UPOA4fXJds6H6PhCp+KvNDyp27S3tYxaMoOIUv5VhVN8VTMbX6n9ooyE5fTCMEDWpDMVFWMvhPqRBTsi0TwbYelbfDxxOzEMPg7wFJFNPF7uOjUFe5JIRnIxUOizT/3ID8JwAMItLMIRoA16K0Zar4Fni0ZXhsYEzje+SLGwGciNyQxSUvVxesLOKsU+o42Ow0lZc7h3rR0pU9prqIJp3Ap1/JGnlGo8FTaLcLqfq36Ab2T775xd4pwAgctqzNRO+nhdTf1csaPgUZT+Qm5JLAcjAZbQ=
-  file: "$TRAVIS_BUILD_DIR/build/libs/blackjack.jar"
-  on:
-    tags: true
-  branches:
-    only:
-      - master
-      - "/^v.*$/"
-
+  - ./gradlew test
+  - ./gradlew sonarqube

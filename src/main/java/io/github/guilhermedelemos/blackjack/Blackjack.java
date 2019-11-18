@@ -1,127 +1,101 @@
 package io.github.guilhermedelemos.blackjack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import io.github.guilhermedelemos.blackjack.ui.TextUI;
 
 public class Blackjack {
 
-    private Baralho baralho;
-    private Jogador jogador1;
-    private Jogador computador;
+    private Deck deck;
+    private Player player;
+    private Player computer;
 
-    public void executar() {
-        System.out.println("Jogo 21");
+    private TextUI userInterface;
 
-        /**
-         * *** instanciar jogadores ****
-         */
-        this.jogador1 = new Jogador();
-        // perguntar nome do Jogador
+    public Blackjack() {
+        super();
+        this.deck = new Deck();
+        this.player = new Player();
+        this.computer = new Player();
+        this.computer.setName("COMUTADOR");
 
-        this.computador = new Jogador();
-        this.computador.setNome("COMPUTADOR");
+        this.userInterface = new TextUI();
+    }
 
-        /**
-         * *** inicializar baralho ****
-         */
-        this.baralho = new Baralho();
+    public void execute() {
+        this.userInterface.println("Blackjack");
+        this.userInterface.sleep();
 
-        /**
-         * *** JOGAR ****
-         */
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Informe o seu nome");
-        jogador1.setNome(scanner.next());
+        String iniciarJogo = this.userInterface.read("Deseja iniciar o jogo? (S/N)");
+        if(iniciarJogo.equals("N")) {
+            return;
+        }
 
-        System.out.println("Boa sorte");
-        System.out.println();
+        this.player.setName(this.userInterface.read("Qual o seu nome?"));
+        this.userInterface.println("Boa sorte!");
+        this.userInterface.sleep();
 
-        boolean jogarNovamente = true;
+        Card firstDraw = this.deck.draw();
+        this.computer.addCard(firstDraw);
+
+        this.userInterface.println(
+            "O " + this.computer.getName() + " sacou a carta " + firstDraw
+        );
+        this.userInterface.sleep();
+
+        /* JOGADOR */
         do {
-            boolean continuar = true;
-            List<Carta> mesa = new ArrayList<>();
-            do {
-                Carta cartaPuxada = this.baralho.puxar();
-                mesa.add(cartaPuxada);
-                jogador1.aumentarPontuacao(cartaPuxada);
-                System.out.println("Você puxou a carta " + cartaPuxada.getNome() + " de " + cartaPuxada.getNaipe());
-                System.out.println("Sua pontuação é " + jogador1.getPontuacao());
-                if (jogador1.atingiu21()) {
-                    System.out.println("Você venceu. Parabéns!");
-                    break;
-                } else if (jogador1.excedeu21()) {
-                    System.out.println("Você perdeu.");
-                    break;
-                }
-                System.out.println("Deseja continuar? S/N");
-                continuar = scanner.next().toUpperCase().equals("S");
-            } while (continuar);
+            Card cardDrawn = this.deck.draw();
+            this.player.addCard(cardDrawn);
+            this.userInterface.println("Você sacou a carta " + cardDrawn);
 
-            /**
-             * *** COMPUTADOR ****
-             */
-            do {
-                Carta cartaPuxada = this.baralho.puxar();
-                mesa.add(cartaPuxada);
-                computador.aumentarPontuacao(cartaPuxada);
-                System.out.println("O computador puxou a carta " + cartaPuxada.getNome() + " de " + cartaPuxada.getNaipe());
-                System.out.println("A pontuação é " + computador.getPontuacao());
-                if (computador.atingiu21()) {
-                    System.out.println("O computador venceu.");
-                    break;
-                } else if (computador.excedeu21()) {
-                    System.out.println("O computador perdeu.");
-                    break;
-                } else {
-                    continuar = computador.getPontuacao() < jogador1.getPontuacao(); // o computador sempre busca a vitória
-                }
-            } while (continuar);
+            this.userInterface.println("PONTUAÇÃO");
+            this.userInterface.println(this.computer.getName() + ": " + this.computer.getPoints());
+            this.userInterface.println(this.player.getName() + ": " + this.player.getPoints());
 
-            System.out.println("-----");
-            System.out.println("Placar:");
-            System.out.println(jogador1.getNome() + ": " + jogador1.getPontuacao());
-            System.out.println(computador.getNome() + ": " + computador.getPontuacao());
-            if (jogador1.getPontuacao() > computador.getPontuacao()) {
-                System.out.println("Você venceu. Parabéns.");
-            } else if (computador.getPontuacao() > jogador1.getPontuacao()) {
-                System.out.println("O computador venceu.");
-            } else {
-                System.out.println("Empate.");
+            if(this.player.getPoints() == 21) {
+                this.userInterface.println("Você venceu. Parabéns!");
+                return;
             }
-            
-            System.out.println("Deseja jogar novamente? S/N");
-            jogarNovamente = scanner.next().toUpperCase().equals("S");
-            
-            baralho.reembaralhar(mesa);
-        } while (jogarNovamente);
 
-        //reembaralhar
-        //this.baralho.reembaralhar(cartasDaMesa);
-    }
+            if(this.player.getPoints() > 21) {
+                this.userInterface.println("Você perdeu.");
+                return;
+            }
 
-    public Baralho getBaralho() {
-        return baralho;
-    }
+        } while(
+            this.userInterface.read("Deseja sacar uma carta? (S/N)").equals("S")
+        );
 
-    public void setBaralho(Baralho baralho) {
-        this.baralho = baralho;
-    }
+        /* COMPUTADOR */
+        do {
+            Card cardDrawn = this.deck.draw();
+            this.computer.addCard(cardDrawn);
+            this.userInterface.println("O " + this.computer.getName() + " sacou a carta " + cardDrawn);
 
-    public Jogador getJogador1() {
-        return jogador1;
-    }
+            this.userInterface.println("PONTUAÇÃO");
+            this.userInterface.println(this.computer.getName() + ": " + this.computer.getPoints());
+            this.userInterface.println(this.player.getName() + ": " + this.player.getPoints());
 
-    public void setJogador1(Jogador jogador1) {
-        this.jogador1 = jogador1;
-    }
+            if(this.computer.getPoints() == 21) {
+                this.userInterface.println("O " + this.computer.getName() + " venceu.");
+                return;
+            }
 
-    public Jogador getComputador() {
-        return computador;
-    }
+            if(this.computer.getPoints() > 21) {
+                this.userInterface.println("Você venceu.");
+                return;
+            }
 
-    public void setComputador(Jogador computador) {
-        this.computador = computador;
+            if(this.computer.getPoints() >= this.player.getPoints()) {
+                break;
+            }
+        } while(true);
+
+        if(this.computer.getPoints() >= this.player.getPoints()) {
+            this.userInterface.println("O " + this.computer.getName() + " venceu.");
+        } else {
+            this.userInterface.println("Você venceu");
+        }
+
     }
 
 }
