@@ -49,6 +49,10 @@ public class Deck {
         this.shuffle();
     }
 
+    public List<Card> listCards() {
+        return this.cards;
+    }
+
     public Card draw() {
         return this.cards.size() > 0 ? this.cards.remove(0) : null;
     }
