@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.guilhermedelemos.DeckTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-11-18T15:38:02" hostname="DESKTOP-V51NGCG" time="0.024">
+  <properties/>
+  <testcase name="shuffleTest()" classname="io.github.guilhermedelemos.DeckTest" time="0.024"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
